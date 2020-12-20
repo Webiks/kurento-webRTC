@@ -6,8 +6,9 @@ const async = require('async'),
     ffmpeg = require('fluent-ffmpeg');
 
 let encoderSdpRequest = null;
-const FILE_NAME = '/home/ubuntu/1080p_3500k.mp4';
-encoderSdpRequest = fs.readFileSync(__dirname + '/eo.sdp');
+const FILE_NAME = process.env.FILE_NAME || '/home/ubuntu/430p_3000k.mp4'; // file to stream
+
+encoderSdpRequest = fs.readFileSync(__dirname + '/eo.sdp'); // SDP file of the encoder, it our case its genereted by ffmpeg
 encoderSdpRequest = encoderSdpRequest.toString();
 if (encoderSdpRequest instanceof Error) {
     console.log('Error while reading encoder sdp file');
@@ -99,7 +100,7 @@ class KurentoClient {
                 });
                 console.log('successfully create rtpEndpoint');
 
-                rtpEndpoint.setMaxVideoRecvBandwidth(6000);
+                rtpEndpoint.setMaxVideoRecvBandwidth(15000);
                 rtpEndpointSdpAnswer = await rtpEndpoint.processOffer(encoderSdpRequest);
 
                 console.log(`successfully process sdp from encoder \n\n${rtpEndpointSdpAnswer}`);
@@ -156,7 +157,7 @@ class KurentoClient {
             delete this.iceCandidateFIFO[sessionId];
         }
     }
-
+    // This function SDP Answer, parse it to extract the new RTP port,then ffmpeg start to stream the file to the new RTP port.
     async executeRTPStreaming(sdpAnswer) {
         let destIp,
             destPort,
@@ -167,9 +168,13 @@ class KurentoClient {
         destIp = parsedSdp.connection.ip;
         destPort = parsedSdp.media[0].port;
         console.log(parsedSdp);
+        // two RTP outputs one for kurento and another for test
         command
             .input(FILE_NAME)
             .inputOptions(['-re'])
+            .output(`rtp://${destIp}:${destPort}`)
+            .outputOptions(['-c copy', '-f rtp', '-sdp_file ./Kurento/eo.sdp'])
+            .output(`rtp://${destIp}:2000`)
             .outputOptions(['-c copy', '-f rtp'])
             .on('start', (command) => {
                 console.log(`ffmpeg started with the command ${command}`);
@@ -180,11 +185,10 @@ class KurentoClient {
             .on('end', () => {
                 console.log('ffmpeg finish operation');
             })
-            .save(`rtp://${destIp}:${destPort}`);
+            .run();
     }
 }
 
 KurentoClient.KClient = null;
 
-// TODO: implement a base class children will implement a rtsp2webRtc and webRtc2WebRtc and so on
 module.exports = KurentoClient;

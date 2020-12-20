@@ -1,7 +1,9 @@
 let remoteVideo,
     webRtcPeer;
-
-const ws = new WebSocket('ws://192.168.1.148:8080');
+/*
+This file loaded on the client, if the client is accessing the server from other machine dont forget to replace the websocket IP.
+*/
+const ws = new WebSocket('ws://192.168.1.157:8080');
 
 window.onload = () => {
     console.log('Page loaded ...');

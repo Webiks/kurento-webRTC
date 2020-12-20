@@ -3,7 +3,7 @@ const express = require('express'),
     ws = require('ws'),
     KurentoClient = require('./Kurento/KurentoClient');
 
-const KURENTO_WS_URL = 'ws://localhost:8888/kurento';
+const KURENTO_WS_URL = 'ws://localhost:8888/kurento'; // Kurento url, if the kurento is running in other machine then replace localhost with the machine's IP.
 
 
 // Express
