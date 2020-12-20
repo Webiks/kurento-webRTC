@@ -1,0 +1,35 @@
+{
+  "name": "kurento-webRTC",
+  "version": "1.0.0",
+  "description": "An example streaming rtp to kurento via rtpEndpoint and sending webRTC to the client",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barakpahima/kurento-webRTC.git"
+  },
+  "keywords": [
+    "rtp",
+    "kurento",
+    "express",
+    "node",
+    "javascript",
+    "streaming",
+    "multimedia"
+  ],
+  "author": "Barak Fahima",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.0",
+    "bluebird": "^3.7.2",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^9.0.1",
+    "kurento-client": "^6.15.0",
+    "sdp-transform": "^2.14.1",
+    "ws": "^4.0.0"
+  }
+}
