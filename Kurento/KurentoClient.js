@@ -1,12 +1,11 @@
-const async = require('async'),
-    kurento = require('kurento-client'),
+const kurento = require('kurento-client'),
     fs = require('fs-extra'),
     Promise = require('bluebird'),
     sdpTransform = require('sdp-transform'),
     ffmpeg = require('fluent-ffmpeg');
 
 let encoderSdpRequest = null;
-const FILE_NAME = process.env.FILE_NAME || '/home/ubuntu/430p_3000k.mp4'; // file to stream
+const FILE_NAME = process.env.FILE_NAME || '/home/ubuntu/1080p_3500k.mp4'; // file to stream
 
 encoderSdpRequest = fs.readFileSync(__dirname + '/eo.sdp'); // SDP file of the encoder, it our case its genereted by ffmpeg
 encoderSdpRequest = encoderSdpRequest.toString();
@@ -72,7 +71,7 @@ class KurentoClient {
                 pipeline = await KurentoClient.KClient.create('MediaPipeline');
                 console.log('successfully created pipeline');
 
-                webRtcEndpoint = await pipeline.create('WebRtcEndpoint');
+                webRtcEndpoint = await pipeline.create('WebRtcEndpoint', { networkCache: 0 });
                 //
                 // listenning to media flow states
                 //
@@ -82,6 +81,9 @@ class KurentoClient {
                 webRtcEndpoint.on('MediaFlowOutStateChange', function (event) {
                     console.log(`WebRtc flow OUT: ${event.state}\n`);
                 });
+                webRtcEndpoint.on('MediaTranscodingStateChange', function (event) {
+                    console.log(`transcoding WebRtc: ${event.state}\n`);
+                });
                 console.log('successfully created webRtcEndpoint');
 
                 // create session
@@ -90,13 +92,16 @@ class KurentoClient {
                     webRtcEndpoint: webRtcEndpoint
                 };
 
-                rtpEndpoint = await pipeline.create('RtpEndpoint');
+                rtpEndpoint = await pipeline.create('RtpEndpoint', { networkCache: 0 });
 
                 rtpEndpoint.on('MediaFlowInStateChange', function (event) {
                     console.log(`Rtp flow IN: ${event.state}\n`);
                 });
                 rtpEndpoint.on('MediaFlowOutStateChange', function (event) {
                     console.log(`Rtp flow OUT: ${event.state}\n`);
+                });
+                rtpEndpoint.on('MediaTranscodingStateChange', function (event) {
+                    console.log(`transcoding rtpendpoint: ${event.state}\n`);
                 });
                 console.log('successfully create rtpEndpoint');
 

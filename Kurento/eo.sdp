@@ -4,7 +4,7 @@ s=No Name
 t=0 0
 a=tool:libavformat 58.45.100
 m=video 2000 RTP/AVP 96
-c=IN IP4 192.168.1.157
-b=AS:2800
+c=IN IP4 192.168.1.159
+b=AS:3244
 a=rtpmap:96 H264/90000
-a=fmtp:96 packetization-mode=1; sprop-parameter-sets=Z0LAHtoDAN6bIAAAAwAgAAAGQeLF1A==,aM48gA==; profile-level-id=42C01E
+a=fmtp:96 packetization-mode=1; sprop-parameter-sets=Z0LAKNoB4AiflmyAAAADAIAAAB4HjBlQ,aM48gA==; profile-level-id=42C028

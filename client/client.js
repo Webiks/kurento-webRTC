@@ -3,7 +3,7 @@ let remoteVideo,
 /*
 This file loaded on the client, if the client is accessing the server from other machine dont forget to replace the websocket IP.
 */
-const ws = new WebSocket('ws://192.168.1.157:8080');
+const ws = new WebSocket('ws://127.0.0.1:8080');
 
 window.onload = () => {
     console.log('Page loaded ...');
@@ -78,9 +78,9 @@ async function onLocalOfferCreated(err, sdpOffer) {
     //
     // remove all other rtp profiles and request only h264 
     //
-    // let split = sdpOffer.sdp.split('a=rtpmap:96 VP8/90000');
-    // var h264Sdp = split[0] + "a=rtpmap:96 H264/90000\n";
-    // sdpOffer.sdp = h264Sdp;
+    let split = sdpOffer.sdp.split('a=rtpmap:96 VP8/90000');
+    var h264Sdp = split[0] + "a=rtpmap:96 H264/90000\n";
+    sdpOffer.sdp = h264Sdp;
 
     await webRtcPeer.setLocalDescription(sdpOffer);
 
